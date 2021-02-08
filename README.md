@@ -37,7 +37,7 @@ A desktop application that allows users to manage a database, using books from t
 
 #### Login Screen to connect to the user's MySQL database:
 
-<img src="https://github.com/Cohen-J-Omer/Library-Database/blob/main/images/Screenshots/login.png" width="500" height="400" />
+<img src="https://github.com/Cohen-J-Omer/Library-Database/blob/main/images/Screenshots/login.png" width="450" height="400" />
 
 #### Book Tab - loads and removes books from the database:
 
@@ -47,7 +47,7 @@ A desktop application that allows users to manage a database, using books from t
 
 <img src="https://github.com/Cohen-J-Omer/Library-Database/blob/main/images/Screenshots/menu.png" width="700" height="500" />
 
-#### Word Tab - runs queries on selected word / group of words, while and displayes their context:
+#### Word Tab - runs queries on selected word / group of words, while and displays their context:
 
 <img src="https://github.com/Cohen-J-Omer/Library-Database/blob/main/images/Screenshots/word_tab.png" width="700" height="500" />
 
@@ -55,11 +55,11 @@ A desktop application that allows users to manage a database, using books from t
 
 <img src="https://github.com/Cohen-J-Omer/Library-Database/blob/main/images/Screenshots/group_tab.png" width="700" height="500" />
 
-#### Phrase Tab - creates phrases to look up in the database:
+#### Phrase Tab - creates phrases and displayes their context in the database:
 
 <img src="https://github.com/Cohen-J-Omer/Library-Database/blob/main/images/Screenshots/phrase_tab.png" width="700" height="500" />
 
-#### Statistics Tab - displayes simple statistics regarding the current books in the database:
+#### Statistics Tab - displays simple statistics regarding the current books in the database:
 
 <img src="https://github.com/Cohen-J-Omer/Library-Database/blob/main/images/Screenshots/stats_tab.png" width="700" height="500" />
 
