@@ -1,4 +1,4 @@
-import os,sys
+import os, sys
 
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -6,9 +6,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from menu_actions import export_db_json, export_db_sql, import_to_db_json, import_to_db_sql, clear_db, export_db_csv
 from functools import partial
 
-from database.schema import CREDENTIALS
 from msg_box import MsgIcon, display_msg
 from utils.Exceptions import Abort
+from login import LoginForm
 
 from database.database import Database
 from books_tab import BooksTab
@@ -104,7 +104,7 @@ class UiMainWindow:
         font_menu_action = QtGui.QFont("Segoe UI", 12, QFont.Bold)
 
         action_clear = QtWidgets.QAction(QIcon((os.path.join(os.path.dirname('__file__'), "images/clear.png"))),
-                                              "Clear", menu_file)
+                                         "Clear", menu_file)
         action_clear.setFont(font_menu_action)
         action_clear.setShortcut('Ctrl+O')
         action_clear.triggered.connect(partial(clear_db, db))
@@ -121,7 +121,7 @@ class UiMainWindow:
             "Export to SQL", menu_file)
         action_export_sql.setFont(font_menu_action)
         action_export_sql.setShortcut('Ctrl+S')
-        action_export_sql.triggered.connect(partial(export_db_sql, self.central_widget, CREDENTIALS))
+        action_export_sql.triggered.connect(partial(export_db_sql, self.central_widget, db.credentials))
 
         action_export_csv = QtWidgets.QAction(
             QIcon((os.path.join(os.path.dirname('__file__'), "images/save.png"))),
@@ -142,7 +142,7 @@ class UiMainWindow:
             "Import SQL", menu_file)
         action_import_sql.setFont(font_menu_action)
         action_import_sql.setShortcut('shift+S')
-        action_import_sql.triggered.connect(partial(import_to_db_sql, db, self.central_widget, CREDENTIALS))
+        action_import_sql.triggered.connect(partial(import_to_db_sql, db, self.central_widget, db.credentials))
 
         menu_file.addAction(action_export_json)
         menu_file.addAction(action_export_sql)
@@ -157,7 +157,11 @@ class UiMainWindow:
 
 def start_app():
     app = QtWidgets.QApplication(sys.argv)
-    db = Database(**CREDENTIALS)
+    login = LoginForm()
+    credentials = None
+    if login.exec():
+        credentials = login.get_credentials()
+    db = Database(credentials)
     manager = Manager(db)
     UiMainWindow(manager)
     manager.show()

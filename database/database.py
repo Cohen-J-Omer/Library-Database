@@ -4,8 +4,9 @@ from database.schema import TABLES, TABLE_QUERIES
 
 
 class Database:
-    def __init__(self, **kwargs):
-        self.connection = mysql.connector.connect(**kwargs)
+    def __init__(self, credentials):
+        self.credentials = credentials  # for OS commands in menu_actions (import/export using mysqldump/mysql)
+        self.connection = mysql.connector.connect(**credentials)
         self.cursor = self.connection.cursor(prepared=True)  # to run parameterized queries
         self.update_on_new_book = []
         self.update_on_import = []
@@ -135,7 +136,7 @@ class Database:
                                                                       FROM word_instance
                                                                       WHERE book_id = %s)
                                                     GROUP BY word_id
-                                                    HAVING COUNT(DISTINCT book_id) = 1)""",(book_id,))
+                                                    HAVING COUNT(DISTINCT book_id) = 1)""", (book_id,))
 
         # remove book alongside with every word_instance by utilizing on delete cascade within the schema
         self.cursor.execute("""DELETE FROM book
@@ -363,7 +364,7 @@ class Database:
             word_id = word
             group_id = group
         else:
-            word_id = self.get_word_id.__wrapped__(self,word)[0]  # bypassing cache
+            word_id = self.get_word_id.__wrapped__(self, word)[0]  # bypassing cache
             group_id = self.get_group_id(group)
 
         # remove word from the group it used to belong to

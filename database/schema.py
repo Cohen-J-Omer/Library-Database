@@ -35,7 +35,7 @@ TBL_WORD_IN_PHRASE = """ CREATE TABLE IF NOT EXISTS word_in_phrase
            CONSTRAINT fk_word_id3 FOREIGN KEY (word_id) REFERENCES word(word_id) ON DELETE CASCADE,
            CONSTRAINT fk_phrase_id FOREIGN KEY (phrase_id) REFERENCES phrase(phrase_id) ON DELETE CASCADE,
            CONSTRAINT PK_phrase_word PRIMARY KEY (word_id,phrase_id,offset) )"""
-CREDENTIALS = {'user': 'root', 'password': '1234', 'host': '127.0.0.1', 'database': 'testdatabase'}
 
 TABLE_QUERIES = [TBL_WORD, TBL_BOOK, TBL_WORD_INSTANCE, TBL_GROUP_OF_WORDS, TBL_WORD_IN_GROUP, TBL_PHRASE,
                  TBL_WORD_IN_PHRASE]
+
