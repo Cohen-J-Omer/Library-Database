@@ -60,7 +60,7 @@ def get_next_word(path):
         char_cnt = number of characters in a word.
         """
     try:
-        line_with_txt = - 1
+        line_with_txt = - 1  # marks the last non empty line encountered
         wrd_cnt = 0
         par_cnt = 1
         sent_cnt = 1
@@ -69,7 +69,7 @@ def get_next_word(path):
                 line_offset = -1  # initial val = -1 so index of word within line will be zero based
                 if line != '\n':
                     line_with_txt = line_cnt
-                elif line_cnt == line_with_txt + 1:  # line == '\n'
+                elif line_cnt == line_with_txt + 1:  # current line == '\n' and last line wasn't
                     par_cnt += 1
                 sentences = list(filter(None, re.split(r'[!?.]', line)))  # filter removes empty elements
                 for i in range(len(sentences)):

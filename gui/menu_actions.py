@@ -25,7 +25,7 @@ def clear_db(db):
 
 
 def extract_tables(db, json_data):
-    """ export_db_json helper function that collects tables rows in jason format and saves them in json_data"""
+    """ export_db_json helper function that collects tables rows in json format and saves them in json_data"""
     for table in TABLES:
         rows = []
         for row in db.table_to_json(table):
@@ -62,6 +62,7 @@ def export_db_csv(db, central_widget):
 
     folder_path = str(QFileDialog.getExistingDirectory(central_widget, "Select Directory"))
     if folder_path:
+        # exports each table to a separate file
         for table in TABLES:
             db.export_to_csv(table, folder_path)
 
@@ -116,7 +117,7 @@ def import_word(db, word_generator):
 
 
 def import_word_instance(db, word_inst_generator):
-    """Reads word instances from the generator in batches in size equal to a pre-determent limit,
+    """Reads word instances from the generator in batches of size equal to a pre-determent limit,
        then inserting them to the DB, thus handling with potentially large volume of values."""
     instances = []
     for word_inst in word_inst_generator:

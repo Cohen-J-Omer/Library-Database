@@ -24,7 +24,6 @@ class GroupTab(QtWidgets.QWidget):
         self.separator_config()
         self.img_config()
 
-
     def create_group(self):
         """Adds new group to the database. notifies stats_tab of changes. """
         group_name = self.line_grp.text().strip()  # removes whitespaces from left and right
@@ -82,7 +81,7 @@ class GroupTab(QtWidgets.QWidget):
 
         self.list_grp.clear()
         self.list_wrd_in_grp.clear()  # resets (left) groups list
-        for group_name in self.db.get_groups():    # populates groups list from DB.
+        for group_name in self.db.get_groups():  # populates groups list from DB.
             self.list_grp.addItem(group_name[0])
 
     def del_wrd_in_grp(self):
@@ -135,15 +134,15 @@ class GroupTab(QtWidgets.QWidget):
         lbl_crt_grp.setGeometry(QtCore.QRect(480, 30, 381, 40))
         lbl_crt_grp.setText(
             "<html><head/><body><p align=\"center\"><span style=\" font-size:20pt; "
-                                   "text-decoration: underline; color:#ffffd5;\">Create a New Word Group:"
-                                   "</span></p></body></html>")
+            "text-decoration: underline; color:#ffffd5;\">Create a New Word Group:"
+            "</span></p></body></html>")
 
         lbl_add_grp = QtWidgets.QLabel(self)
         lbl_add_grp.setGeometry(QtCore.QRect(480, 260, 381, 40))
         lbl_add_grp.setText(
             "<html><head/><body><p align=\"center\"><span style=\" font-size:20pt; "
-                                   "text-decoration: underline; color:#ffffd5;\">Add Words to Groups:"
-                                   "</span></p></body></html>")
+            "text-decoration: underline; color:#ffffd5;\">Add Words to Groups:"
+            "</span></p></body></html>")
 
         lbl_ent_grp = QtWidgets.QLabel(self)
         lbl_ent_grp.setGeometry(QtCore.QRect(150, 98, 310, 31))
@@ -165,8 +164,6 @@ class GroupTab(QtWidgets.QWidget):
         lbl_wrd_in_grp.setGeometry(QtCore.QRect(940, 330, 290, 31))
         lbl_wrd_in_grp.setText(
             "<html><head/><body><p><span style=\" font-size:18pt; color:#ffffd5;\">Words in selected group:</span></p></body></html>")
-
-
 
     def lines_config(self):
         self.line_grp.setGeometry(QtCore.QRect(480, 100, 511, 29))
@@ -210,5 +207,3 @@ class GroupTab(QtWidgets.QWidget):
         sep_group.setLineWidth(4)
         sep_group.setMidLineWidth(0)
         sep_group.setFrameShape(QtWidgets.QFrame.HLine)
-
-

@@ -1,4 +1,4 @@
-import os,re
+import os, re
 from utils.style_constants import STYLE_LINE, STYLE_BTN_TOOLTIP
 from PyQt5.QtGui import QTextCursor, QBrush, QColor
 from PyQt5.QtWidgets import QTableWidgetItem
@@ -6,6 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 
 from msg_box import MsgIcon, display_msg
+
 
 class PhraseTab(QtWidgets.QWidget):
 
@@ -39,7 +40,7 @@ class PhraseTab(QtWidgets.QWidget):
             return
 
         phrase_id = self.db.insert_phrase(text)
-        if phrase_id:  # if phrase has been added to the DB attribute phrase_words to phrase:
+        if phrase_id:  # if phrase has been added to the DB, attribute phrase_words to phrase:
 
             for offset, word in enumerate(words):
 
@@ -77,7 +78,7 @@ class PhraseTab(QtWidgets.QWidget):
                     self.tbl_phrase.setItem(row_pos, column_pos, item)
 
     def update_preview(self):
-        """ writes text surrounding selected word to text browser """
+        """ writes text surrounding selected word to text browser and highlights it """
         self.txt_phrs_appr.clear()
         index = self.tbl_phrase.selectionModel().currentIndex()
         title = index.sibling(index.row(), 0).data()
@@ -86,7 +87,7 @@ class PhraseTab(QtWidgets.QWidget):
         line_index = int(index.sibling(index.row(), 5).data())
         path = self.db.get_book_path(title, author)
         phrase_txt = self.cmb_phrs.currentText()  # used to set cursor at the end of the phrase
-        wrd_txt = phrase_txt.split(" ")[0]  # used in get_char_offset()
+        wrd_txt = phrase_txt.split(" ")[0]  # gets the first word of the phrase. used in get_char_offset()
 
         radius = 15
         start, end, relative_line, char_offset = line - radius, 2 * radius, radius, 1
@@ -99,6 +100,7 @@ class PhraseTab(QtWidgets.QWidget):
             with open(path, 'r') as file:
                 for _ in range(start):  # skipping rows in file to starting point
                     next(file)
+                # writing lines, surrounding the phrase, into the preview
                 for line_no, row in enumerate(file, start=1):
                     end -= 1
                     if end < 0:
@@ -106,8 +108,8 @@ class PhraseTab(QtWidgets.QWidget):
                     if line_no == relative_line:
                         char_offset = self.get_char_offset(wrd_txt, row.lower(), line_index)
 
-                    # following 3 rows replaces append() to abstain from adding a
-                    # new (empty) line with every row.
+                    # following 3 rows replaces append() line, to abstain from adding an
+                    # empty line with every row.
                     self.txt_phrs_appr.moveCursor(QTextCursor.End)
                     self.txt_phrs_appr.insertPlainText(row)
                     self.txt_phrs_appr.moveCursor(QTextCursor.End)
@@ -120,7 +122,7 @@ class PhraseTab(QtWidgets.QWidget):
         self.mark_selected_phrase(relative_line, char_offset, len(phrase_txt))
 
     def get_char_offset(self, target_word, line, line_index):
-        """ :returns the character index of nth' occurrence of target_word in line provided"""
+        """ :returns the character index of target_word in line provided"""
 
         # gets occurrence number of target_word in provided line
         occurrence = 0
@@ -132,7 +134,7 @@ class PhraseTab(QtWidgets.QWidget):
 
         # returns the index of the required (as calculated above) occurrence of target_word
         matches = re.finditer(r'\b' + target_word + r'\b', line, re.MULTILINE)
-        for num, match in enumerate(matches, start=1):
+        for num, match in enumerate(matches, start=1):  # start = 1, since occurrence is 1 based index.
             if num == occurrence:
                 return match.span()[0]
 
@@ -145,7 +147,7 @@ class PhraseTab(QtWidgets.QWidget):
         cursor.movePosition(QTextCursor.Start, QTextCursor.MoveAnchor)
         # move it down to the right line
         cursor.movePosition(QTextCursor.Down, QTextCursor.MoveAnchor, relative_line - 1)
-        # scroll scrollbar down to the word in search, so it would appear in the current page of the text browser
+        # set cursor down to the word in search, to avoid having to scroll down to the highlighted word
         self.txt_phrs_appr.setTextCursor(cursor)
         # position cursor at the beginning of the word
         cursor.movePosition(QTextCursor.Right, QTextCursor.MoveAnchor, char_offset)
@@ -172,8 +174,8 @@ class PhraseTab(QtWidgets.QWidget):
         lbl_srch_phrs = QtWidgets.QLabel(self)
         lbl_srch_phrs.setGeometry(QtCore.QRect(520, 30, 341, 41))
         lbl_srch_phrs.setText("<html><head/><body><p align=\"center\"><span style=\" font-size:20pt; "
-                                   "text-decoration: underline; color:#ffffd5;\">Search Custom Phrases:"
-                                   "</span></p></body></html>")
+                              "text-decoration: underline; color:#ffffd5;\">Search Custom Phrases:"
+                              "</span></p></body></html>")
 
         lbl_sel_phrs = QtWidgets.QLabel(self)
         lbl_sel_phrs.setGeometry(QtCore.QRect(230, 190, 271, 31))

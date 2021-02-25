@@ -63,7 +63,7 @@ class Database:
         """inserts new book to db. if fails (mostly due to duplicate val) returns False,
             otherwise returns last ID of added book. """
         try:
-            if len(args) == 6:
+            if len(args) == 6:  # used when importing existing database.
                 self.cursor.execute("INSERT INTO book (book_id,title,author,date,size,path) VALUES "
                                     "(%s,%s,%s,%s,%s,%s)", args)
             else:
@@ -171,13 +171,13 @@ class Database:
         return self.cursor.fetchone()  # returns id of inserted word.
 
     def insert_mult_word_instance(self, instances):
-        """Inserts a list of words' occurrences in the same execution instruction to improve performance """
+        """Inserts a list of words' occurrences in the same commit instruction to improve performance """
         values = ', '.join(map(str, instances))
         self.cursor.execute(f"INSERT INTO word_instance VALUES {values}")
         self.connection.commit()
 
     def insert_mult_word(self, words, importing=False):
-        """Inserts a list of words in the same execution instruction to improve performance """
+        """Inserts a list of words in the same commit instruction to improve performance """
         if importing:
             word_list = ', '.join(map(str, words))
             # INSERT IGNORE would be redundant since before initiating import, DB is cleared.
@@ -427,7 +427,7 @@ class Database:
 
     def insert_word_in_phrase(self, word_id, phrase_id, offset):
         """Inserts word that's belongs to a phrase newly added by user to the DB.
-           The offset parameter indicates the word's index within the phrase.
+           The offset (zero based index) parameter indicates the word's index within the phrase.
            """
         self.cursor.execute("INSERT INTO word_in_phrase (word_id,phrase_id,offset) VALUE (%s,%s,%s)",
                             (word_id, phrase_id, offset))
@@ -448,14 +448,13 @@ class Database:
                                 ) 
                                   select title, author, wi1.paragraph_serial, wi1.sentence_serial,
                                                 wi1.line_serial, wi1.line_offset
-                                  from word
-                                  INNER JOIN word_instance as wi1 on word.word_id = wi1.word_id
+                                  FROM word_instance as wi1 
                                   INNER JOIN word_instance as wi2 on wi2.book_id = wi1.book_id 
                                         and wi2.sentence_serial = wi1.sentence_serial
                                   INNER JOIN selPhrase on wi2.word_id = selPhrase.word_id 
                                   INNER JOIN book on wi1.book_id = book.book_id
                                   WHERE wi2.word_serial = wi1.word_serial + selPhrase.offset
-                                  GROUP BY wi1.book_id, word_txt, wi1.word_serial, wi1.sentence_serial
+                                  GROUP BY wi1.book_id, wi1.word_serial, wi1.sentence_serial
                                   HAVING COUNT(*) = (SELECT COUNT(*) FROM selPhrase) 
                                   ORDER BY title""", (phrase_id,))
         except mysql.connector.Error as error:
@@ -485,13 +484,13 @@ class Database:
                                 limit 1""", (phrase,))
         phrase_id = self.cursor.fetchone()
 
-        # get all words belonging to given group
+        # get all words belonging to given phrase
         self.cursor.execute("""select word_id
                                 from word_in_phrase
                                 where phrase_id =  %s""", (phrase_id[0],))
         phrase_words = self.cursor.fetchall()
 
-        # disconnect words that used to belong to the selected group, from said group
+        # delete words that used to belong to the selected phrase, from said phrase
         for word_id in phrase_words:
             self.cursor.execute("""delete 
                     from word_in_phrase 
@@ -499,12 +498,12 @@ class Database:
                     and word_id = %s""", (phrase_id[0], word_id[0]))
             self.connection.commit()
 
-        # remove words that used to belong to given phrase from the database, unless the server another purpose
+        # remove words that used to belong to given phrase from the database, unless they serve another purpose
         if phrase_words:
             for word_id in phrase_words:
                 self.remove_word_if_redundant(word_id[0])
 
-        # removes the phrase from the database
+        # finally removes the phrase from the database
         self.cursor.execute("""delete from phrase
                                 where phrase_id = %s """, (phrase_id[0],))
         self.connection.commit()

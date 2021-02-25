@@ -254,4 +254,3 @@ class StatsTab(QtWidgets.QWidget):
 
         self.lbl_avg_chr_wrd.setGeometry(QtCore.QRect(580, 100, 251, 29))
         self.lbl_avg_chr_wrd.setText("Avg. per word: 0")
-

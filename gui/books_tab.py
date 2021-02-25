@@ -98,7 +98,7 @@ class BooksTab(QtWidgets.QWidget):
             for column_pos in range(1, 6):  # skipping attribute book_id.
                 item = QTableWidgetItem(row[column_pos])
                 item.setTextAlignment(Qt.AlignHCenter)
-                if column_pos == 5:
+                if column_pos == 5:  # color blue the path to a book
                     item.setForeground(QBrush(QColor(0, 128, 255)))
                     self.tbl_books.setItem(row_pos, column_pos - 1, item)
                 else:
@@ -146,7 +146,6 @@ class BooksTab(QtWidgets.QWidget):
         author = index.sibling(index.row(), 1).data()
         if title and author:  # user selected row in the table before clicking the button
             self.db.del_book(title, author)
-            #self.update_cmbs()
         self.db.notify_import()  # to re-render GUI
 
     def tbl_config(self):

@@ -14,7 +14,9 @@ class ComboBox(QtWidgets.QComboBox):
 
     def showPopup(self):
         """ override showPopup by first emitting signal before displaying items.
-            signal will be caught and lead to an update on this combo box's items """
+            signal will be caught and lead to an update on this combo box's items.
+            connection to signal is made in search_filters_config()"""
+
         self.popupAboutToBeShown.emit()
         super(ComboBox, self).showPopup()
 
@@ -154,9 +156,10 @@ class WordsTab(QtWidgets.QWidget):
         line = int(index.sibling(index.row(), 4).data())
         line_index = int(index.sibling(index.row(), 5).data())
         path = self.db.get_book_path(title, author)
-        index = self.tbl_res.selectionModel().currentIndex()
+        index = self.tbl_res.selectionModel().currentIndex()  # reusing the above variable "index"
         wrd_txt = index.sibling(index.row(), 0).data()
 
+        # the word to be highlighted is located at line number start + relative_line
         radius = 15
         start, end, relative_line, char_offset = line - radius, 2 * radius, radius, 1
         if line < radius:
